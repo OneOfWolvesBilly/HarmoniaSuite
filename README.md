@@ -4,7 +4,20 @@
 
 ---
 
-## Harmonia Player — A Modern, Extensible Alternative for High-Fidelity Audio (Current Focus)
+## Suite Components
+
+| Component | Description | Current Status | Repo |
+|------------|--------------|----------------|------|
+| Harmonia Player | High-fidelity music player for macOS / iPhone / iPad | Phase 1–2 in development | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaPlayer) |
+| Harmonia Audio (macOS Free Edition) | Audio editor for macOS — metadata, lyrics, and waveform editing | In planning for Phase 3 | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaAudio) |
+| Harmonia Audio Pro (Private) | Professional edition — advanced effects, non-destructive editing, plugin hosting | Private repository | N/A |
+| Harmonia Community | Open portal for AUv3 plugins, presets, and developer submissions | Planned after Audio v1 | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaCommunity) |
+
+Windows and Linux ports will be considered later once the macOS version and community ecosystem are stable.
+
+---
+
+## Current Focus — Harmonia Player
 
 ### Mission
 To forge a modern, privacy-respecting audio player, drawing inspiration from iTunes’ usability, Colibri’s performance, and foobar2000’s flexibility, creating a balanced, extensible listening experience.
@@ -26,9 +39,7 @@ A modular, high-fidelity player designed for both casual listeners and audio eng
 - Smart UI — Clean, latency-free interface built natively in SwiftUI  
 - Hi-Res Ready — macOS Pro version supports FLAC / APE / DSD / ALAC playback and conversion  
 
----
-
-## Harmonia Player — Free vs Pro
+### Free vs Pro
 
 | Feature Category | Free Edition (macOS / iOS) | Pro Edition (macOS) |
 |------------------|-----------------------------|----------------------|
@@ -46,22 +57,6 @@ A modular, high-fidelity player designed for both casual listeners and audio eng
 
 Free for everyone — fast, clean, open-source.  
 Pro for audiophiles — Hi-Res playback & transcoding precision.
-
-Explore more details, screenshots, and technical roadmap at  
-[→ Harmonia Player Repository](https://github.com/OneOfWolvesBilly/HarmoniaPlayer)
-
----
-
-## Suite Components
-
-| Component | Description | Current Status | Repo |
-|------------|--------------|----------------|------|
-| Harmonia Player | High-fidelity music player for macOS / iPhone / iPad | Phase 1–2 in development | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaPlayer) |
-| Harmonia Audio (macOS Free Edition) | Audio editor for macOS — metadata, lyrics, and waveform editing | In planning for Phase 3 | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaAudio) |
-| Harmonia Audio Pro (Private) | Professional edition — advanced effects, non-destructive editing, plugin hosting | Private repository | N/A |
-| Harmonia Community | Open portal for AUv3 plugins, presets, and developer submissions | Planned after Audio v1 | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaCommunity) |
-
-Windows and Linux ports will be considered later once the macOS version and community ecosystem are stable.
 
 ---
 
