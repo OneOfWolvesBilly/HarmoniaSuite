@@ -1,117 +1,121 @@
 # HarmoniaSuite
 
-**HarmoniaSuite** is an open creative audio ecosystem by Chih-hao (Billy) Chen, unifying free and professional tools for modern musicians.
+**HarmoniaSuite** is an open-source cross-platform audio ecosystem centered around a
+platform-independent audio core and its validation applications.
+
+The suite exists to ensure that audio playback behavior can be shared across platforms
+without sharing implementation code, while enabling real-world product usage.
 
 ---
 
 ## Architecture Overview
 
-| Component | Description | Language | Status | Repo |
-|------------|--------------|-----------|---------|------|
-| HarmoniaCore (Swift) | Core audio framework for Apple platforms (AVFoundation) | Swift | Active | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaCore) |
-| HarmoniaPlayer (Apple) | macOS / iOS player built on the Swift version of HarmoniaCore | Swift | Active | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaPlayer) |
-| HarmoniaCore (C++20) | Core audio framework for Linux (PipeWire/ALSA) | C++20 | Planned (Phase 3) | (TBD) |
-| HarmoniaPlayer (Linux) | Linux desktop player (CLI/GUI) built on the C++20 HarmoniaCore | C++20 / Qt or GTK | Planned (Phase 4) | (TBD) |
-| HarmoniaAudio (macOS Free) | Audio editor — metadata, lyrics, waveform editing | Swift | Deferred (Phase 5) | (TBD) |
-| HarmoniaAudio Pro | Professional edition — advanced effects & non-destructive editing | Swift / C++ | Deferred (Phase 6, private) | N/A |
-| HarmoniaCommunity | Open portal for plugins and presets | Web | Planned (post Audio v1) | [→ View Repository](https://github.com/OneOfWolvesBilly/HarmoniaCommunity) |
+| Component                  | Role                                                | Language   | Status                 |
+| -------------------------- | --------------------------------------------------- | ---------- | ---------------------- |
+| **HarmoniaCore (Swift)**   | Reference audio core implementation                 | Swift      | **Complete (Phase 1)** |
+| **HarmoniaPlayer (Apple)** | Validation application embedding HarmoniaCore       | Swift      | **Active (Phase 2)**   |
+| **HarmoniaCore (C++20)**   | Secondary core implementation for parity validation | C++20      | Planned (Phase 3)      |
+| **Linux validation app**   | Minimal playback target for C++ core validation     | C++20 / Qt | Planned (Phase 4)      |
+
+> The Swift implementation currently serves as the reference behavior for all future platform ports.
+
+---
+
+## Repositories
+
+### Overview
+
+* **[HarmoniaSuite](https://github.com/OneOfWolvesBilly/HarmoniaSuite)**: Architecture overview and suite-level documentation
+
+### Core Development
+
+* **[HarmoniaCore](https://github.com/OneOfWolvesBilly/HarmoniaCore)**: Umbrella monorepo for cross-platform architecture, specifications, and implementations
+
+  * `HarmoniaCore-Swift/`: Reference Swift implementation (Phase 1 — Complete)
+  * `HarmoniaCore-Cpp/`: C++20 implementation (Phase 3 — Planned)
+
+### Distribution Packages
+
+* **[HarmoniaCore-Swift](https://github.com/OneOfWolvesBilly/HarmoniaCore-Swift)**: Swift Package Manager distribution, mirrored from the HarmoniaCore monorepo
+
+### Applications
+
+* **[HarmoniaPlayer](https://github.com/OneOfWolvesBilly/HarmoniaPlayer)**: Apple validation application (Phase 2 — Active)
+
+  * Depends on: `HarmoniaCore-Swift` via Swift Package Manager
 
 ---
 
 ## Platform Responsibility Separation
 
-| Layer | Apple (Swift) | Linux (C++20) |
-|------|----------------|---------------|
-| Core | HarmoniaCore (Swift / AVFoundation) | HarmoniaCore (C++20 / PipeWire) |
-| Application | HarmoniaPlayer (macOS / iOS) | HarmoniaPlayer (Linux, planned) |
+| Layer           | Apple (Swift)                       | Linux (C++20)                   |
+| --------------- | ----------------------------------- | ------------------------------- |
+| **Core**        | HarmoniaCore (Swift / AVFoundation) | HarmoniaCore (C++20 / PipeWire) |
+| **Application** | HarmoniaPlayer (macOS / iOS)        | Minimal validation app          |
 
-HarmoniaPlayer (Swift) is a native macOS/iOS application and will remain separate from the Linux codebase.  
-The Linux implementation focuses on the Core framework first, then a minimal CLI/GUI for parity validation.
-> No shared source code across platforms — only a shared, testable behavior specification and vectors.
----
-
-## Module Dependency Relationship
-
-HarmoniaSuite applications share a unified decoding and playback foundation through HarmoniaCore.  
-This structure ensures consistent behavior across all products while allowing each to focus on its specific user workflow.
-
-| Module | Depends on | Purpose | Playback Control |
-|---------|-------------|----------|------------------|
-| HarmoniaCore | – | Core framework that provides decoding, playback, and encoding logic | Yes |
-| HarmoniaPlayer | HarmoniaCore | Focused on playback, playlist, and audio output | Yes |
-| HarmoniaAudio | HarmoniaCore | Focused on waveform editing, metadata modification, and re-encoding | Yes (real-time preview) |
-
-Both HarmoniaPlayer and HarmoniaAudio use the same playback engine defined in HarmoniaCore.  
-HarmoniaAudio embeds this engine to allow in-place playback and region preview during editing.  
-This guarantees that the sound heard during editing is identical to the exported playback result.
-
-### Design Principles
-- Single playback engine: One codebase for playback, shared between Player and Audio.  
-- Real-time parity: Editing preview and final playback use the same decoding path.  
-- Separation of concerns: Core handles audio logic; Player and Audio provide user interaction layers.  
-- Cross-platform validation: Linux builds will replicate the same dependency structure using the C++ implementation of HarmoniaCore.
+**Design constraint:**
+No shared source code across platforms — only shared behavior specifications and executable test vectors.
 
 ---
 
-## Supported Audio Formats (Player perspective)
+## Purpose of the Suite
 
-| Format | Codec | Player (macOS) | Player (iOS) | Player (Linux, planned) |
-|--------|------|-----------------|--------------|-------------------------|
-| MP3 | MPEG-1 Layer III | Yes | Yes | Yes |
-| AAC / ALAC | MPEG-4 / Apple Lossless | Yes | Yes | Yes |
-| WAV / AIFF | PCM 16–24 bit | Yes | Yes | Yes |
-| FLAC | Free Lossless Audio Codec | Yes | – | Yes |
-| DSD (DSF/DFF) | Direct Stream Digital | Yes | – | Yes |
-| Opus (optional) | Ogg / Opus | – | – | Planned |
+HarmoniaSuite applications exist primarily as **validation targets** to ensure that
+HarmoniaCore can be embedded into real-world products, rather than as standalone product commitments.
 
-The iOS version supports MP3, AAC, and ALAC only, limited by Apple Music/iTunes library compatibility (no direct file access).  
-The macOS Pro version adds high-resolution FLAC and DSD decoding via embedded open-source decoders (`dr_flac`, `libdsd`).
+At the same time, these applications are developed with the intention of evolving into
+end-user products once the underlying core APIs and behavior contracts are sufficiently validated.
 
----
+The suite enforces:
 
-## Repository Layout
-
-```
-HarmoniaSuite/
-├─ HarmoniaCore/                # Core framework (Apple + Linux)
-│  ├─ apple-swift/
-│  ├─ linux-cpp/
-│  ├─ docs/api-parity.md
-│  └─ test-vectors/
-├─ HarmoniaPlayer/              # macOS / iOS App (SwiftUI, uses Swift Core)
-└─ HarmoniaPlayer_Linux/        # (planned) Linux CLI/GUI app (Qt/GTK, uses C++ Core)
-```
+* A single, platform-agnostic audio domain model
+* Explicit separation between real-time audio logic and application concerns
+* Behavior specifications acting as contracts between implementations
+* Continuous validation through real applications built on top of the core APIs
 
 ---
 
-## Roadmap (Suite Level)
+## Development Status (Constraint-Oriented)
 
-| Phase | Timeframe | Focus | Goal |
-|-------|-----------|-------|------|
-| Phase 1 | Q4 2025 | HarmoniaPlayer (macOS MVP) + Swift Core | Launch free player with MP3/AAC/ALAC |
-| Phase 2 | Q1 2026 | HarmoniaPlayer (iOS) | Release iOS version |
-| Phase 3 | Q2–Q3 2026 | HarmoniaCore (Linux C++20) | MVP + parity tests against Swift Core |
-| Phase 4 | Q3–Q4 2026 | HarmoniaPlayer_Linux | Minimal desktop player (CLI/GUI) |
-| Phase 5 | 2027 | HarmoniaAudio (macOS Free) | Metadata / lyric editing |
-| Phase 6 | 2027–2028 | HarmoniaAudio Pro (macOS, private) | Advanced effects / non-destructive editing |
-| Phase 7 | Post-2028 | Community Portal | Open contributions |
+| Phase   | Focus                   | Dependency                        |
+| ------- | ----------------------- | --------------------------------- |
+| Phase 1 | HarmoniaCore (Swift)    | Completed                         |
+| Phase 2 | Apple validation app    | Validates Swift core APIs         |
+| Phase 3 | HarmoniaCore (C++20)    | After Apple validation stabilizes |
+| Phase 4 | Linux validation target | After C++ core parity is achieved |
+
+No fixed delivery dates are committed at the suite level.
+Progress is driven by validation readiness rather than timelines.
+
+Future work may expand beyond validation targets as the core architecture stabilizes,
+including more feature-complete end-user applications.
 
 ---
 
-## Support
+## Documentation
 
-Your support helps sustain long-term open-source audio development. Every donation contributes to documentation, localization, and future accessibility efforts.
+### HarmoniaCore
 
-PayPal → https://paypal.me/HarmoniaSuite  
-Buy Me a Coffee → https://buymeacoffee.com/harmonia.suite.project  
-Contact → harmonia.audio.project@gmail.com
+* Architecture & design specifications
+* Ports & adapters documentation
+* Behavior definitions and testing strategy
+
+Refer to the **[HarmoniaCore](https://github.com/OneOfWolvesBilly/HarmoniaCore)** monorepo for architecture and cross-platform specifications.
+The **[HarmoniaCore-Swift](https://github.com/OneOfWolvesBilly/HarmoniaCore-Swift)** repository contains the current reference implementation.
+
+---
+
+## Sustainability
+
+If you find the HarmoniaSuite architecture or documentation useful, support helps sustain
+long-term maintenance, testing, and cross-platform validation work.
+
+* [☕ Buy Me a Coffee](https://buymeacoffee.com/harmonia.suite.project)
+* [💖 PayPal](https://paypal.me/HarmoniaSuite)
 
 ---
 
 ## License
-MIT © 2025 Chih-hao (Billy) Chen  
-Contact → harmonia.audio.project@gmail.com
 
-## Author
-Chih-hao (Billy) Chen  
-GitHub: [OneOfWolvesBilly](https://github.com/OneOfWolvesBilly)
+MIT © 2025 Chih-hao (Billy) Chen
+Contact: [harmonia.audio.project@gmail.com](mailto:harmonia.audio.project@gmail.com)
